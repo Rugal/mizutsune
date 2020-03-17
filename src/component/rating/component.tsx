@@ -24,7 +24,7 @@ const Rate: React.FC<IProps> = (p) => {
   };
 
   const rateNumber = __(p.value, 0) > 0 && <Box ml={2}>
-    <Typography variant="h4" color="secondary" gutterBottom={false}>
+    <Typography className={classes.unselectable} variant="h4" color="secondary" gutterBottom={false}>
       {p.value}
     </Typography>
   </Box>;
