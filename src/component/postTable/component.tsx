@@ -11,14 +11,14 @@ import {
   TableRow,
 } from "@material-ui/core";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
-import gql from "graphql-tag";
 import React from "react";
 import { Link } from "react-router-dom";
 
 import { downloadFile } from "../../app/download";
-import { Post, PostPage } from "../../generated/graphql";
+import { Post } from "../../generated/graphql";
 import { TorrentApi } from "../../generated/openapi";
 import Rate from "../rating";
+import { GET_POST, IPostPageVars, IPostPageResult } from "./request";
 import { style } from "./style";
 
 interface IColumn {
@@ -40,36 +40,6 @@ const columns: IColumn[] = [
 interface IProps {
   token: string;
 }
-
-interface IPostPageResult {
-  postPage: PostPage;
-}
-
-interface IPostPageVars {
-  index: number;
-  size: number;
-}
-
-const GET_POST = gql`
-  query getPostPage($index: Int!, $size: Int!) {
-    postPage(index: $index, size: $size) {
-      size
-      total
-      index
-      items {
-        pid
-        title
-        size
-        rate
-        createAt
-        author {
-          uid
-          username
-        }
-      }
-    }
-  }
-`;
 
 const PostTable: React.FC<IProps> = (p: IProps) => {
   const classes = style();

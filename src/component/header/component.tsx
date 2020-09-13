@@ -11,14 +11,13 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import FaceIcon from "@material-ui/icons/Face";
 import HomeIcon from "@material-ui/icons/Home";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import gql from "graphql-tag";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { PostPage } from "../../generated/graphql";
 import Login from "./login";
 import Logout from "./logout";
 import { style } from "./style";
+import { GET_POST_PAGE, IPostPageVars, IPostPageResult } from "./request";
 
 interface IProps {
   logout: () => any;
@@ -26,32 +25,6 @@ interface IProps {
   setPostPage: (d: any) => any;
   showProgressBar: boolean;
 }
-
-interface IPostPageResult {
-  postPage: PostPage;
-}
-
-interface IPostPageVars {
-  index: number;
-  size: number;
-}
-
-const GET_POST_PAGE = gql`
-  query getPostPage($index: Int!, $size: Int!) {
-    postPage(index: $index, size: $size) {
-      size
-      total
-      index
-      items {
-        title
-        content
-        enable
-        hash
-        size
-      }
-    }
-  }
-`;
 
 const Header: React.FC<IProps> = (props) => {
   const classes = style();

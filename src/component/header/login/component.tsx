@@ -1,3 +1,4 @@
+import { useQuery } from "@apollo/react-hooks";
 import {
   Button,
   CircularProgress,
@@ -10,8 +11,8 @@ import {
 } from "@material-ui/core";
 import React, { useState } from "react";
 
-import { userApi } from "../../../app/request";
 import { transparency } from "../common";
+import { GET_LOGIN, ILoginVars, ILoginResult } from "./request";
 import { style } from "./style";
 
 interface IProps {
@@ -47,26 +48,26 @@ const Login: React.FC<IProps> = (p) => {
   };
 
   // 1. submit login request
-  const submit = () => email && password && !invalidEmail && userApi.loginByEmail(email, password)
-    .then((response) => {
-      // 2. Clean form value
-      resetForm();
-      // 3. show progress circle in login screen
-      p.show();
-      // 4. set corresponding result
+  const { data, refetch } = useQuery<ILoginResult, ILoginVars>(GET_LOGIN,
+    { variables: { email: email, password: password } });
+  if (!data) {
+    return null;
+  }
+  const { token } = data;
+  if (token) {
+    // 2. Clean form value
+    resetForm();
+    // 3. show progress circle in login screen
+    p.show();
+    // 4. set corresponding result
+    setTimeout(() => {
+      p.login(`Bearer ${token}`);
+      p.handleClose();
       setTimeout(() => {
-        p.login(`Bearer ${response.data}`);
-        p.handleClose();
-        setTimeout(() => {
-          p.hide();
-        }, 200);
-      }, 1000);
-    }).catch((error) => {
-      // prompt error message in login dialog
-      if (error.response.status === 401) {
-        setErrorMessage("User Credential Mismatch");
-      }
-    });
+        p.hide();
+      }, 200);
+    }, 1000);
+  }
 
   const validate = (e: React.ChangeEvent<HTMLInputElement>) => validateInput(e.target.value);
   const typePassword = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
@@ -105,7 +106,7 @@ const Login: React.FC<IProps> = (p) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={submit} color="primary">
+        <Button onClick={() => refetch()} color="primary">
           Login
           </Button>
         <Button onClick={cancel} color="secondary">
