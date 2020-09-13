@@ -6,7 +6,7 @@ import React from "react";
 import { ScreenBody } from "./style";
 
 interface IProps {
-  children?: React.ReactNode;
+  children: React.ReactElement;
 }
 
 const Body: React.FC<IProps> = (props) => {
